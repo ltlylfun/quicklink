@@ -20,12 +20,13 @@
 /**
  * Checks if a feature on `link` is natively supported.
  * Examples of features include `prefetch` and `preload`.
- * @param {Object} link - Link object.
  * @return {Boolean} whether the feature is supported
  */
-function hasPrefetch(link) {
-  link = document.createElement('link');
-  return link.relList && link.relList.supports && link.relList.supports('prefetch');
+function hasPrefetch() {
+  const link = document.createElement('link');
+  return (
+    link.relList && link.relList.supports && link.relList.supports('prefetch')
+  );
 }
 
 /**
@@ -35,8 +36,8 @@ function hasPrefetch(link) {
  * @return {Object} a Promise
  */
 function viaDOM(url, hasCrossorigin) {
-  return new Promise((resolve, reject, link) => {
-    link = document.createElement('link');
+  return new Promise((resolve, reject) => {
+    const link = document.createElement('link');
     link.rel = 'prefetch';
     link.href = url;
     if (hasCrossorigin) {
@@ -57,8 +58,8 @@ function viaDOM(url, hasCrossorigin) {
  * @return {Object} a Promise
  */
 function viaXHR(url, hasCredentials) {
-  return new Promise((resolve, reject, request) => {
-    request = new XMLHttpRequest();
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
 
     request.open('GET', url, request.withCredentials = hasCredentials);
 
@@ -97,7 +98,7 @@ export function viaFetch(url, hasModeCors, hasCredentials, isPriority) {
   const options = {headers: {accept: '*/*'}};
   if (!hasModeCors) options.mode = 'no-cors';
   if (hasCredentials) options.credentials = 'include';
-  isPriority ? options.priority = 'high' : options.priority = 'low';
+  isPriority ? (options.priority = 'high') : (options.priority = 'low');
   return window.fetch ? fetch(url, options) : viaXHR(url, hasCredentials);
 }
 
